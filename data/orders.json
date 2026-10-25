@@ -1,0 +1,50 @@
+[
+  {
+    "id": "ORD-1911-9214",
+    "createdAt": "2026-10-25T07:15:20.000Z",
+    "createdAtEpoch": 1792912520000,
+    "updatedAt": "2026-10-25T07:16:00.000Z",
+    "status": "Accepted",
+    "statusHistory": [
+      {
+        "status": "New",
+        "timestamp": "2026-10-25T07:15:20.000Z",
+        "note": "Order received via CAFE 1911 online portal."
+      },
+      {
+        "status": "Accepted",
+        "timestamp": "2026-10-25T07:16:00.000Z",
+        "note": "Confirmed by kitchen manager for preparation."
+      }
+    ],
+    "customerName": "Ananya Rongpi",
+    "contactNumber": "+91 60030 11223",
+    "deliveryAddress": "Rongnihang, Diphu, Assam 782460",
+    "landmark": "Near Diphu Club",
+    "orderNotes": "Please make the starters extra crispy.",
+    "fulfilmentMethod": "delivery",
+    "paymentMethod": "cod",
+    "items": [
+      {
+        "id": "nvstar-8",
+        "name": "Chicken Lollipop",
+        "unitPrice": 275,
+        "quantity": 1,
+        "itemTotal": 275
+      },
+      {
+        "id": "nvmain-11",
+        "name": "Chicken Bharta",
+        "unitPrice": 330,
+        "quantity": 1,
+        "itemTotal": 330
+      }
+    ],
+    "subtotal": 605,
+    "deliveryFee": 0,
+    "codFee": 100,
+    "total": 705,
+    "currency": "₹",
+    "isDemoOrder": true
+  }
+]

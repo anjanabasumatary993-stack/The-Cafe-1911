@@ -1,0 +1,100 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "anjanasumatary993@gmail.com" ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidOrderStatus(status) {
+      return status in [
+        'New', 'Accepted', 'Preparing', 'Ready', 'Out for Delivery', 'Delivered', 'Cancelled',
+        'Pending', 'Rejected'
+      ];
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll([
+        'id', 'createdAt', 'status', 'customerName', 'contactNumber',
+        'fulfilmentMethod', 'subtotal', 'deliveryFee', 'total'
+      ]) &&
+      data.id is string && data.id.size() <= 64 &&
+      data.createdAt is string && data.createdAt.size() <= 40 &&
+      isValidOrderStatus(data.status) &&
+      data.customerName is string && data.customerName.size() >= 2 && data.customerName.size() <= 100 &&
+      data.contactNumber is string && data.contactNumber.size() >= 6 && data.contactNumber.size() <= 30 &&
+      data.fulfilmentMethod in ['delivery', 'pickup'] &&
+      data.subtotal is number && data.subtotal >= 0 &&
+      data.deliveryFee is number && data.deliveryFee >= 0 &&
+      data.total is number && data.total >= 0;
+    }
+
+    // Orders Collection
+    match /orders/{orderId} {
+      // Single get allowed for customer tracking with exact ID, or staff
+      allow get: if isValidId(orderId);
+
+      // Only staff can list all orders
+      allow list: if isAdmin();
+
+      // Anyone can create an order with strict payload validation
+      allow create: if isValidId(orderId) &&
+                       incoming().id == orderId &&
+                       isValidOrder(incoming());
+
+      // Only staff can update order status and notes
+      allow update: if isValidId(orderId) &&
+                       isAdmin() &&
+                       isValidOrderStatus(incoming().status) &&
+                       incoming().id == existing().id &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt', 'statusHistory', 'orderNotes']);
+
+      allow delete: if false;
+    }
+
+    // Menu Collection
+    match /menu/{itemId} {
+      allow get, list: if true;
+      allow write: if isValidId(itemId) && isAdmin();
+    }
+
+    // Settings Collection
+    match /settings/{settingId} {
+      allow get, list: if true;
+      allow write: if isValidId(settingId) && isAdmin();
+    }
+
+    // Admins Collection
+    match /admins/{adminId} {
+      allow get: if isValidId(adminId) && isSignedIn() && (request.auth.uid == adminId || isAdmin());
+      allow list: if isAdmin();
+      allow write: if isValidId(adminId) && isAdmin();
+    }
+  }
+}

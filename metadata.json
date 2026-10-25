@@ -1,0 +1,8 @@
+{
+  "name": "CAFE 1911 — The Art of Luxury",
+  "description": "An ultra-premium digital hospitality experience for CAFE 1911. Exceptional coffee, thoughtfully crafted flavours, and an atmosphere made for slow living.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

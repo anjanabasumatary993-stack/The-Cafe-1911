@@ -1,0 +1,15 @@
+{
+  "isDeliveryActive": true,
+  "deliveryFee": 0,
+  "minOrderAmount": 200,
+  "deliveryEstimateMinutes": "35 – 45 mins",
+  "currency": "₹",
+  "deliveryCoverageRadiusKm": 5.0,
+  "deliveryArea": "Diphu Local Area (Configured by Manager in Staff Console)",
+  "minCodSubtotal": 500,
+  "codFee": 100,
+  "isCodEnabled": true,
+  "acceptedPaymentMethods": [
+    "Cash on Delivery (COD)"
+  ]
+}

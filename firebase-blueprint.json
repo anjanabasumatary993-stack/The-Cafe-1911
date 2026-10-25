@@ -1,0 +1,158 @@
+{
+  "entities": {
+    "Order": {
+      "title": "Order",
+      "description": "A food or beverage order placed by a customer for delivery or pickup at CAFE 1911.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique order reference identifier (e.g. ORD-1911-XXXX)."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp when the order was created."
+        },
+        "createdAtEpoch": {
+          "type": "number",
+          "description": "Epoch timestamp in milliseconds when the order was placed."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp when the order status or notes were last modified."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current lifecycle status of the order.",
+          "enum": ["Pending", "Preparing", "Ready", "Out for Delivery", "Delivered", "Rejected"]
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Full name of the ordering customer.",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "contactNumber": {
+          "type": "string",
+          "description": "Contact telephone number for courier delivery verification.",
+          "minLength": 6,
+          "maxLength": 30
+        },
+        "deliveryAddress": {
+          "type": "string",
+          "description": "Physical destination address or salon collection indicator.",
+          "maxLength": 250
+        },
+        "landmark": {
+          "type": "string",
+          "description": "Optional gate code, cross street, or entry instructions.",
+          "maxLength": 150
+        },
+        "orderNotes": {
+          "type": "string",
+          "description": "Special dietary or preparation notes from the customer.",
+          "maxLength": 500
+        },
+        "fulfilmentMethod": {
+          "type": "string",
+          "description": "Fulfilment method requested.",
+          "enum": ["delivery", "pickup"]
+        },
+        "subtotal": {
+          "type": "number",
+          "description": "Authoritative subtotal of items in Euros."
+        },
+        "deliveryFee": {
+          "type": "number",
+          "description": "Configured delivery charge applied."
+        },
+        "total": {
+          "type": "number",
+          "description": "Grand total order cost."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency symbol used for the transaction."
+        },
+        "isDemoOrder": {
+          "type": "boolean",
+          "description": "Flag indicating simulated kitchen test order vs live restaurant order."
+        }
+      },
+      "required": [
+        "id",
+        "createdAt",
+        "status",
+        "customerName",
+        "contactNumber",
+        "fulfilmentMethod",
+        "subtotal",
+        "deliveryFee",
+        "total"
+      ]
+    },
+    "StoreSettings": {
+      "title": "StoreSettings",
+      "description": "Configurable operational settings for online ordering and courier dispatch.",
+      "type": "object",
+      "properties": {
+        "isDeliveryActive": {
+          "type": "boolean",
+          "description": "Toggle indicating whether delivery orders are currently accepted."
+        },
+        "deliveryFee": {
+          "type": "number",
+          "description": "Flat courier delivery fee."
+        },
+        "minOrderAmount": {
+          "type": "number",
+          "description": "Minimum required subtotal to enable courier delivery."
+        },
+        "deliveryEstimateMinutes": {
+          "type": "string",
+          "description": "Estimated timeframe presented to customers."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Active currency symbol for the store."
+        },
+        "deliveryCoverageRadiusKm": {
+          "type": "number",
+          "description": "Delivery radius in kilometers from salon."
+        }
+      },
+      "required": ["isDeliveryActive", "deliveryFee", "minOrderAmount", "currency"]
+    },
+    "AdminProfile": {
+      "title": "AdminProfile",
+      "description": "Staff member authorization record.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Email address of the staff member."
+        },
+        "role": {
+          "type": "string",
+          "description": "Staff role (e.g. admin, barista, manager).",
+          "enum": ["admin", "staff", "manager"]
+        }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Collection of customer food and beverage orders."
+    },
+    "/settings/{settingId}": {
+      "schema": "StoreSettings",
+      "description": "Storewide delivery and operational parameters."
+    },
+    "/admins/{adminId}": {
+      "schema": "AdminProfile",
+      "description": "Authorized staff and admin accounts for salon dashboard access."
+    }
+  }
+}
